@@ -1,31 +1,38 @@
 const express = require("express");
 
+const connetDB = require("./config/database");
+
+const User = require("./models/user");
+
 const app = express();
 
+app.post("/signup", async (req, res) => {
+  const userObj = {
+    firstName: "Santosh",
+    lastName: "Satyavarapu",
+    emailId: "santoshsatyavarapu123@gmail.com",
+    age: 25,
+    password: "Shepck#890",
+    gender: "Male",
+  };
+  const user = new User(userObj);
+  try {
+    await user.save();
+    res.send("User Added successfully!");
+  } catch (err) {
+    res.status(400).send("Error saving the user:" + err.message);
+  }
 
-
-
-app.get("/santosh", (req, res) => {
-  res.send({name:"santosh",age:25});
+  res.send("Data Send");
 });
 
-app.post("/santosh", (req, res) => {
-  res.send("Deatils Uploaded");
-});
-
-app.delete("/santosh", (req, res) => {
-  res.send("Deatils removed");
-});
-
-app.use((req, res) => {
-  res.send("serveris running");
-});
-
-
-
-
-
-
-app.listen(3001, () => {
-  console.log("severing is running");
-});
+connetDB()
+  .then(() => {
+    console.log("Database Connected");
+    app.listen(3000, () => {
+      console.log("severing is running");
+    });
+  })
+  .catch((err) => {
+    console.error("Database Not Connected");
+  });
